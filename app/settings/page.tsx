@@ -1,12 +1,11 @@
 import { ConnectProviderButtons } from "@/components/ConnectProviderButtons";
 import { createClient } from "@/lib/supabase/server";
-import type { Provider } from "@/lib/types";
 import { CheckCircle2, CircleAlert, Link2 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 type ProviderConnectionRow = {
-  provider: Provider;
+  provider: "oura" | "whoop";
   status: string;
   connected_at: string | null;
   last_synced_at: string | null;
@@ -90,7 +89,7 @@ function ProviderConnectionCard({
   provider,
   connection
 }: {
-  provider: Provider;
+  provider: "oura" | "whoop";
   connection?: ProviderConnectionRow;
 }) {
   const label = provider === "oura" ? "Oura" : "WHOOP";

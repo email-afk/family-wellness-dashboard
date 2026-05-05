@@ -1,5 +1,4 @@
 import { summarizeNumber } from "@/lib/normalization";
-import type { FamilyMemberSummary } from "@/lib/types";
 import { Bell, EyeOff, Watch } from "lucide-react";
 import { MetricCard } from "./MetricCard";
 import { TrendLine } from "./TrendLine";
@@ -14,7 +13,7 @@ function visibleMetric(
   return exact;
 }
 
-export function FamilyMemberCard({ member }: { member: FamilyMemberSummary }) {
+export function FamilyMemberCard({ member }: { member: any }) {
   const today = member.today;
   const statusTone =
     today?.status === "Recovered" ? "good" : today?.status === "Needs Rest" ? "rest" : "watch";
@@ -32,7 +31,7 @@ export function FamilyMemberCard({ member }: { member: FamilyMemberSummary }) {
             )}
           </div>
           <div className="mt-2 flex flex-wrap gap-2">
-            {member.providers.map((provider) => (
+            {member.providers.map((provider: string) => (
               <span
                 key={provider}
                 className="inline-flex items-center gap-1 rounded-full bg-white/80 px-2.5 py-1 text-xs font-medium uppercase tracking-normal text-moss"

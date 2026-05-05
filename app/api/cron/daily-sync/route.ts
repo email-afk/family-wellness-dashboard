@@ -4,7 +4,7 @@ import { fetchOuraDailyMetrics } from "@/lib/providers/oura";
 import { fetchWhoopDailyMetrics } from "@/lib/providers/whoop";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createAllowedAlerts } from "@/lib/sync/alerts";
-import type { Provider } from "@/lib/types";
+
 import { NextRequest, NextResponse } from "next/server";
 
 async function updateProviderLastSyncedAt(
@@ -62,12 +62,12 @@ export async function POST(request: NextRequest) {
       const { error: metricError } = await admin.from("daily_metrics").upsert(
         {
           user_id: connection.user_id,
-          provider: connection.provider as Provider,
+          provider: connection.provider as "oura" | "whoop",
           metric_date: metric.date,
-          recovery_score: metric.recoveryScore,
-          readiness_score: metric.readinessScore,
-          sleep_score: metric.sleepScore,
-          sleep_performance: metric.sleepPerformance,
+recovery_score: metric.recoveryScore ?? metric.recoveryIndex,
+readiness_score: metric.readinessScore ?? null,
+sleep_score: metric.sleepScore ?? metric.sleepIndex,
+sleep_performance: metric.sleepPerformance ?? null,
           hrv_rmssd_ms: metric.hrvRmssdMs,
           resting_heart_rate_bpm: metric.restingHeartRateBpm,
           strain_score: metric.strainScore,
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
           sleep_index: metric.sleepIndex,
           activity_index: metric.activityIndex,
           status_label: metric.status,
-          source_payload: rawMetric.sourcePayload ?? rawMetric,
+          source_payload: metric.sourcePayload ?? rawMetric,
           updated_at: syncedAt
         },
         { onConflict: "user_id,provider,metric_date" }
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
 
       if (metricError) throw metricError;
 
-      alerts += await createAllowedAlerts(connection.user_id, metric.date, metric.status);
+      alerts += await createAllowedAlerts(connection.user_id, metric.date, metric.status ?? "Unknown");
       synced += 1;
     }
 

@@ -25,10 +25,19 @@ export function normalizeDailyMetric(input: DailyMetricInput): NormalizedDailyMe
 
   return {
     ...input,
+    hrvRmssdMs: input.hrvRmssdMs ?? null,
+restingHeartRateBpm: input.restingHeartRateBpm ?? null,
+recoveryScore: input.recoveryScore ?? null,
+readinessScore: input.readinessScore ?? null,
+sleepScore: input.sleepScore ?? null,
+sleepPerformance: input.sleepPerformance ?? null,
+strainScore: input.strainScore ?? null,
+activityScore: input.activityScore ?? null,
+status: input.status ?? status,
+sourcePayload: input.sourcePayload ?? input,
     recoveryIndex: recoveryIndex === null ? null : Math.round(clamp(recoveryIndex)),
     sleepIndex: sleepIndex === null ? null : Math.round(clamp(sleepIndex)),
     activityIndex: activityIndex === null ? null : Math.round(activityIndex),
-    status
   };
 }
 

@@ -3,10 +3,9 @@ import { FamilyMemberCard } from "@/components/FamilyMemberCard";
 import { normalizeDailyMetric } from "@/lib/normalization";
 import { createClient } from "@/lib/supabase/server";
 import type {
-  DailyMetricInput,
-  FamilyMemberSummary,
-  MetricPrivacy,
-  Provider
+  
+  
+  
 } from "@/lib/types";
 import { CircleAlert, Database, LogIn } from "lucide-react";
 import Link from "next/link";
@@ -15,7 +14,7 @@ export const dynamic = "force-dynamic";
 
 type DailyMetricRow = {
   user_id: string;
-  provider: Provider;
+  provider: "oura" | "whoop";
   metric_date: string;
   recovery_score: number | null;
   readiness_score: number | null;
@@ -32,22 +31,22 @@ type DailyMetricRow = {
 };
 
 type ProviderConnectionRow = {
-  provider: Provider;
+  provider: "oura" | "whoop";
 };
 
 type FamilySummaryRow = {
   user_id: string;
   display_name: string | null;
   avatar_url: string | null;
-  providers: Provider[] | null;
-  recovery_visibility: MetricPrivacy["recovery"];
-  sleep_visibility: MetricPrivacy["sleep"];
-  hrv_visibility: MetricPrivacy["hrv"];
-  resting_heart_rate_visibility: MetricPrivacy["restingHeartRate"];
-  activity_visibility: MetricPrivacy["activity"];
+  providers: ("oura" | "whoop")[] | null;
+  recovery_visibility: boolean;
+sleep_visibility: boolean;
+hrv_visibility: boolean;
+resting_heart_rate_visibility: boolean;
+  activity_visibility: boolean;
   alerts_enabled: boolean;
   today: {
-    provider?: Provider;
+    provider?: "oura" | "whoop";
     metric_date?: string;
     recovery_index?: number | null;
     sleep_index?: number | null;
@@ -58,7 +57,7 @@ type FamilySummaryRow = {
   } | null;
 };
 
-const exactPrivacy: MetricPrivacy = {
+const exactPrivacy = {
   recovery: "exact",
   sleep: "exact",
   hrv: "exact",
@@ -75,7 +74,7 @@ function numberOrNull(value: unknown) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-function metricInputFromRow(row: DailyMetricRow): DailyMetricInput {
+function metricInputFromRow(row: DailyMetricRow) {
   return {
     provider: row.provider,
     date: row.metric_date,
@@ -114,16 +113,28 @@ function memberFromDailyMetric({
 }: {
   row: DailyMetricRow;
   displayName: string;
-  providers: Provider[];
-  trends: FamilyMemberSummary["trends"];
-}): FamilyMemberSummary {
+  avatarUrl: string | null;
+  providers: ("oura" | "whoop")[] | null;
+  trends: {
+  hrv: unknown[];
+  restingHeartRate: unknown[];
+};
+}) {
   const normalized = normalizeDailyMetric(metricInputFromRow(row));
 
   return {
     id: row.user_id,
     displayName,
-    providers,
-    privacy: exactPrivacy,
+    avatarUrl: null,
+    providers: providers ?? [],
+    privacy: {
+  recovery: true,
+  sleep: true,
+  hrv: true,
+  restingHeartRate: true,
+  activity: true,
+  alertsEnabled: true,
+},
     today: {
       ...normalized,
       recoveryIndex: row.recovery_index ?? normalized.recoveryIndex,
@@ -141,7 +152,7 @@ function memberFromDailyMetric({
   };
 }
 
-function memberFromFamilySummary(row: FamilySummaryRow): FamilyMemberSummary {
+function memberFromFamilySummary(row: FamilySummaryRow) {
   return {
     id: row.user_id,
     displayName: row.display_name ?? "Family member",
@@ -191,7 +202,7 @@ export default async function DashboardPage() {
     error: userError
   } = await supabase.auth.getUser();
 
-  let members: FamilyMemberSummary[] = [];
+  let members: any[] = [];
   let queryError: string | null = userError?.message ?? null;
 
   if (user) {
@@ -241,6 +252,7 @@ export default async function DashboardPage() {
         const ownMember = memberFromDailyMetric({
           row: latest,
           displayName: displayNameForUser(user),
+          avatarUrl: null,
           providers: providers.length ? providers : [latest.provider],
           trends: {
             hrv: rows
