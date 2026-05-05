@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Family Wellness Dashboard Preview</title>
+    <style>
+      :root {
+        --ink: #13201a;
+        --moss: #526a4e;
+        --mint: #dff0df;
+        --clay: #b87955;
+        --coral: #e78b75;
+        --sky: #dceaf7;
+        --paper: #fbfaf7;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, var(--sky), rgba(251,250,247,.7) 42%, var(--mint));
+        color: var(--ink);
+      }
+      main {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 28px 0;
+      }
+      header, article {
+        border: 1px solid rgba(255,255,255,.8);
+        background: rgba(255,255,255,.68);
+        border-radius: 8px;
+        box-shadow: 0 18px 50px rgba(31,42,32,.1);
+        backdrop-filter: blur(12px);
+      }
+      header {
+        padding: 24px;
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+        align-items: end;
+      }
+      h1 {
+        margin: 8px 0 0;
+        max-width: 780px;
+        font-size: clamp(36px, 6vw, 58px);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+      .eyebrow {
+        margin: 0;
+        color: var(--clay);
+        font-size: 13px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+      .sub {
+        max-width: 680px;
+        color: var(--moss);
+        line-height: 1.7;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .button {
+        color: #fff;
+        background: var(--ink);
+        border-radius: 8px;
+        padding: 11px 15px;
+        font-weight: 700;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .button.secondary { background: var(--clay); }
+      .stack {
+        display: grid;
+        gap: 16px;
+        margin-top: 18px;
+      }
+      article { padding: 20px; }
+      .member-top {
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      h2 { margin: 0; font-size: 24px; }
+      .providers {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+      .pill {
+        border-radius: 999px;
+        background: rgba(255,255,255,.82);
+        color: var(--moss);
+        padding: 7px 10px;
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+      .status {
+        background: var(--ink);
+        color: #fff;
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+      }
+      .metric {
+        border: 1px solid rgba(255,255,255,.8);
+        border-radius: 8px;
+        background: rgba(255,255,255,.76);
+        padding: 16px;
+      }
+      .metric span {
+        color: var(--moss);
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .metric strong {
+        display: block;
+        margin-top: 14px;
+        font-size: 32px;
+      }
+      .trends {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 18px;
+      }
+      .trend-title {
+        color: var(--moss);
+        font-size: 14px;
+        font-weight: 800;
+      }
+      svg {
+        width: 100%;
+        height: 54px;
+      }
+      polyline {
+        fill: none;
+        stroke: var(--moss);
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      @media (max-width: 760px) {
+        header { display: grid; }
+        .metrics, .trends { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <p class="eyebrow">Private family wellness</p>
+          <h1>Today&apos;s recovery picture, shared with consent.</h1>
+          <p class="sub">Oura and WHOOP data land in one family view, normalized into simple readiness, sleep, HRV, heart rate, and activity signals.</p>
+        </div>
+        <nav class="actions" aria-label="Provider connections">
+          <a class="button" href="/api/oauth/oura/start">Connect Oura</a>
+          <a class="button secondary" href="/api/oauth/whoop/start">Connect WHOOP</a>
+        </nav>
+      </header>
+      <section class="stack">
+        <article>
+          <div class="member-top">
+            <div>
+              <h2>Van</h2>
+              <div class="providers"><span class="pill">Oura</span><span class="pill">WHOOP</span></div>
+            </div>
+            <span class="status">Normal</span>
+          </div>
+          <div class="metrics">
+            <div class="metric"><span>Readiness</span><strong>62%</strong></div>
+            <div class="metric"><span>Sleep</span><strong>78%</strong></div>
+            <div class="metric"><span>HRV</span><strong>Trend visible</strong></div>
+            <div class="metric"><span>Activity</span><strong>45%</strong></div>
+          </div>
+          <div class="trends">
+            <div><div class="trend-title">HRV trend</div><svg viewBox="0 0 100 48"><polyline points="0,37 16,30 33,39 50,19 66,23 83,12 100,23"/></svg></div>
+            <div><div class="trend-title">Resting heart rate</div><svg viewBox="0 0 100 48"><polyline points="0,17 16,22 33,12 50,27 66,22 83,27 100,22"/></svg></div>
+          </div>
+        </article>
+        <article>
+          <div class="member-top">
+            <div>
+              <h2>Dad</h2>
+              <div class="providers"><span class="pill">Oura</span><span class="pill">Summary only</span></div>
+            </div>
+            <span class="status">Needs Rest</span>
+          </div>
+          <div class="metrics">
+            <div class="metric"><span>Readiness</span><strong>Needs Rest</strong></div>
+            <div class="metric"><span>Sleep</span><strong>Poor sleep</strong></div>
+            <div class="metric"><span>HRV</span><strong>Hidden</strong></div>
+            <div class="metric"><span>Activity</span><strong>Balanced</strong></div>
+          </div>
+          <div class="trends">
+            <div><div class="trend-title">HRV trend</div><svg viewBox="0 0 100 48"><polyline points="0,18 16,10 33,22 50,26 66,14 83,30 100,34"/></svg></div>
+            <div><div class="trend-title">Resting heart rate</div><svg viewBox="0 0 100 48"><polyline points="0,39 16,33 33,27 50,21 66,27 83,15 100,9"/></svg></div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
