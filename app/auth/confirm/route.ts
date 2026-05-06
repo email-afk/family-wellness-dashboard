@@ -17,8 +17,9 @@ export async function GET(request: NextRequest) {
       new URL(`/login?error=${encodeURIComponent(error.message)}`, request.url)
     );
   }
-} else if (tokenHash && type) {
-  await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
-}
+  } else if (tokenHash && type) {
+    await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
+  }
 
-return NextResponse.redirect(new URL(next, request.url));
+  return NextResponse.redirect(new URL(next, request.url));
+}
