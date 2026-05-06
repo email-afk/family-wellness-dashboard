@@ -1,4 +1,5 @@
 import { signInWithEmail } from "./actions";
+import GoogleButton from "./GoogleButton";
 
 export default function LoginPage({
   searchParams
@@ -29,7 +30,10 @@ export default function LoginPage({
             Send magic link
           </button>
         </form>
-        <LoginNotice searchParams={searchParams} />
+
+<GoogleButton />
+
+<LoginNotice searchParams={searchParams} />
       </div>
     </main>
   );
