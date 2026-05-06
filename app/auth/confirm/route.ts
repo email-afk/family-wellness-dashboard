@@ -9,11 +9,16 @@ export async function GET(request: NextRequest) {
   const next = request.nextUrl.searchParams.get("next") ?? "/";
   const supabase = await createClient();
 
-  if (code) {
-    await supabase.auth.exchangeCodeForSession(code);
-  } else if (tokenHash && type) {
-    await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
-  }
+ if (code) {
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
 
-  return NextResponse.redirect(new URL(next, request.url));
+  if (error) {
+    return NextResponse.redirect(
+      new URL(`/login?error=${encodeURIComponent(error.message)}`, request.url)
+    );
+  }
+} else if (tokenHash && type) {
+  await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
 }
+
+return NextResponse.redirect(new URL(next, request.url));
